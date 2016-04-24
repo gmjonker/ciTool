@@ -1,4 +1,4 @@
-package a2t.citool;
+package gmjonker.citool;
 
 import com.google.common.base.Stopwatch;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
@@ -17,30 +17,48 @@ import java.util.concurrent.TimeUnit;
 import static util.Util.map;
 import static util.Util.nanosToString;
 
-/** Uploads documents, with URL in label **/
-public class DocumentUploader
+/**
+ * Uploads documents, with URL in label.
+ **/
+public class CiDocumentUploader
 {
-    final ConceptInsights conceptInsightsService;
-    final Corpus corpus;
+    public static CiDocumentUploader getReplacingDocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus)
+    {
+        return new CiDocumentUploader(conceptInsightsService, corpus, true, true);
+    }
+
+    private final ConceptInsights conceptInsightsService;
+    private final Corpus corpus;
+    private final boolean overwriteExisting;
+    private final boolean deleteOthers;
 
     int numUploadedDocs = 0;
     int numDeletedDocs = 0;
 
-    private static final LambdaLogger log = new LambdaLogger(DocumentUploader.class);
+    private static final LambdaLogger log = new LambdaLogger(CiDocumentUploader.class);
     private static Stopwatch mainStopwatch;
 
-    public DocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus)
+    public CiDocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus, boolean overwriteExisting,
+            boolean deleteOthers)
     {
         this.conceptInsightsService = conceptInsightsService;
         this.corpus = corpus;
+        this.overwriteExisting = overwriteExisting;
+        this.deleteOthers = deleteOthers;
     }
+
+    //    public CiDocumentUploader(String user, String password, String accountId, String corpusName)
+    //    {
+    //        this(CiUtil.getConceptInsightsService(user, password),
+    //                CiCorpusHelper.getCorpusWithRetries(CiUtil.getConceptInsightsService(user, password), accountId, corpusName));
+    //    }
 
     /**
      * @return The documents that were added.
      */
-    List<Document> uploadDocuments(List<CiDocument> ciDocuments, boolean overwriteExisting, boolean deleteOthers)
+    public List<Document> uploadDocuments(List<CiDocument> ciDocuments)
     {
-        log.info("CI document uploader is uploading to corpus {}", corpus);
+        log.info("CI document uploader is uploading to corpus {}", corpus.getId());
         log.debug("Overwrite existing documents set to: {}", overwriteExisting);
         log.debug("Delete other documents set to: {}", deleteOthers);
 
@@ -52,12 +70,12 @@ public class DocumentUploader
         List<Document> documentsToAdd = new ArrayList<>();
         for (CiDocument ciDocument : ciDocuments)
         {
-            log.trace("ciDocument = " + ciDocument);
             Document document = new Document(corpus, ciDocument.name);
             document.setLabel(ciDocument.label);
-//            Map<String, String> userFields = new HashMap<>();
-//            userFields.put("companyName", ciDocument.companyName);
-//            document.setUserFields(userFields);
+            // Setting user fields doesn't work unfortunately
+            //            Map<String, String> userFields = new HashMap<>();
+            //            userFields.put("companyName", ciDocument.companyName);
+            //            document.setUserFields(userFields);
             document.addParts(new Part("Text part", ciDocument.body, "text/plain"));
             log.trace("document id: {} ", document::getId);
             documentsToAdd.add(document);
@@ -108,8 +126,8 @@ public class DocumentUploader
                 log.trace(addedDocument.getLabel());
                 continue;
             } else {
-//                    log.debug("Adding document {}/{}: {} - {}", i, documentsToAdd.size(), addedDocument.getName(),
-//                            addedDocument.getLabel());
+                //                    log.debug("Adding document {}/{}: {} - {}", i, documentsToAdd.size(), addedDocument.getName(),
+                //                            addedDocument.getLabel());
                 log.trace("Adding document: " + addedDocument);
                 try {
                     Stopwatch stopwatch = Stopwatch.createStarted();
@@ -117,7 +135,7 @@ public class DocumentUploader
                     stopwatch.stop();
                     log.debug("Added document {}/{}: {} - {} in {}", i, documentsToAdd.size(), addedDocument.getName(),
                             addedDocument.getLabel(), stopwatch);
-//                        log.debug("Create document took {}", stopwatch.toString());
+                    //                        log.debug("Create document took {}", stopwatch.toString());
                     numUploadedDocs++;
                 } catch (Exception e) {
                     log.error("Error while uploading document {}", addedDocument.getLabel(), e);
@@ -139,7 +157,8 @@ public class DocumentUploader
         CorpusStats corpusStats = conceptInsightsService.getCorpusStats(corpus);
         log.trace("CorpusStats:\n" + corpusStats);
 
-        log.debug("Documents are now processing...");
+        log.debug("Documents are all uploaded, and are now being processed by Watson...");
+        log.info("Done.");
         return documentsToAdd;
     }
 

@@ -1,4 +1,4 @@
-package a2t.citool;
+package gmjonker.citool;
 
 /**
  * Contains lists of succeeded and failed uploads.

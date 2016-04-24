@@ -1,16 +1,17 @@
-package a2t.citool;
+package gmjonker.temp;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
+import gmjonker.citool.UploadResult;
 
 import java.util.*;
 
 public class PimmrFacade
 {
     /**
-     * Uploads all documents and waits until all have finished processing
+     * Uploads all documents and waits until all have finished processing.
      */
     public UploadResult uploadDocuments(Collection<PimmrDocument> pimmrDocuments)
     {
@@ -21,9 +22,9 @@ public class PimmrFacade
     }
 
     /**
-     * [Restaurant/tag scores]
+     * [Restaurant/tag scores].
      *
-     * Queries CI to get relations between concepts and documents.
+     * <p>Queries CI to get relations between concepts and documents.
      * @return Table of all relations between documents and concepts.
      */
     public Table<String, PimmrDocument, Double> getRelatedConcepts(Collection<String> conceptNames)
@@ -35,10 +36,10 @@ public class PimmrFacade
     }
 
     /**
-     * (Future idea)
+     * (Future idea).
      * [Find restaurants that are like a given restaurant]
      *
-     * For each of the given documents, get the N closest documents.
+     * <p>For each of the given documents, get the N closest documents.
      * TYPE: would be nice to stay within type.
      */
     public Multimap<PimmrDocument, PimmrDocument> getNRelatedDocuments(Collection<PimmrDocument> pimmrDocuments, int n)
@@ -50,13 +51,13 @@ public class PimmrFacade
     }
 
     /**
-     * (Future idea)
+     * (Future idea).
      * [Find restaurants by a given list of concepts]
      *
-     * Get N documents that match best with given concepts.
+     * <p>Get N documents that match best with given concepts.
      * TYPE: would be nice to get results for each type
      *
-     * Note: this method would benefit from caching.
+     * <p>Note: this method would benefit from caching.
      */
     public Map<A2tDocument, Double> getDocumentsByConcepts(Collection<String> conceptNames, int n)
     {

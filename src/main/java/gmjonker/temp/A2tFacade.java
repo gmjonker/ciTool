@@ -1,4 +1,6 @@
-package a2t.citool;
+package gmjonker.temp;
+
+import gmjonker.citool.UploadResult;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,7 +9,7 @@ import java.util.Map;
 public class A2tFacade
 {
     /**
-     * Uploads all documents and waits until all have finished processing
+     * Uploads all documents and waits until all have finished processing.
      */
     public UploadResult uploadDocuments(Collection<PimmrDocument> pimmrDocuments)
     {
@@ -18,12 +20,12 @@ public class A2tFacade
     }
 
     /**
-     * [Interest search, (matching companies with card answers)]
+     * [Interest search, (matching companies with card answers)].
      *
-     * Get N documents that match best with given concepts.
+     * <p>Get N documents that match best with given concepts.
      * TYPE: would be nice to get results for each type
      *
-     * Note: this method would benefit from caching.
+     * <p>Note: this method would benefit from caching.
      */
     public Map<A2tDocument, Double> getDocumentsByConcepts(Collection<String> conceptNames, int n)
     {
@@ -34,9 +36,9 @@ public class A2tFacade
     }
 
     /**
-     * [Matching companies with card answers]
+     * [Matching companies with card answers].
      *
-     * For each concept tuple, get N documents that match best with given concepts.
+     * <p>For each concept tuple, get N documents that match best with given concepts.
      * TYPE: would be nice to get results for each type
      */
     public Map<Collection<String>, Map<A2tDocument, Double>> getDocumentsByConceptsLists(
@@ -49,9 +51,9 @@ public class A2tFacade
     }
 
     /**
-     * [Matching companies with card answers]
+     * [Matching companies with card answers].
      *
-     * For each concept tuple, get relation scores with all documents in corpus.
+     * <p>For each concept tuple, get relation scores with all documents in corpus.
      * TYPE: would be nice to get results for each type
      */
     public Map<Collection<String>, Map<A2tDocument, Double>> getDocumentsByConceptsLists(

@@ -120,7 +120,7 @@ public class Util
             return string;
         if (length < 9)
             return string.substring(0, Math.min(length, desiredLength));
-        int partLength = ((desiredLength-2) / 2);
+        int partLength = ((desiredLength - 2) / 2);
         return string.substring(0, partLength) + ".." + string.substring(length - partLength, length);
     }
 
