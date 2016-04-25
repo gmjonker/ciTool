@@ -580,7 +580,7 @@ public class Util
         // If docker is told to copy an env var from host to container, and the var is not set on the host, it will
         // set the var on the container to ''
         if (Strings.isNullOrEmpty(value)) {
-            log.debug("Environment variable {} not set, falling back to '{}'", name, defaultValue);
+            log.debug("Environment variable {} not set, using default '{}'", name, defaultValue);
             value = defaultValue;
         } else {
             log.debug("{}={}", name, value);
@@ -599,5 +599,4 @@ public class Util
         log.info("Free memory within allocated (mb):           {}", freeMemory);
         log.info("Max memory that still can be allocated (mb): {}", maxMemory - allocatedMemory);
     }
-
 }

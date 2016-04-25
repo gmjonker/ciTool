@@ -5,7 +5,6 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.Util;
 
 @SuppressWarnings("WeakerAccess")
 public class CiUtil
@@ -26,37 +25,30 @@ public class CiUtil
 
     public static String getNameFromId(String id)
     {
-        log.trace("id = " + id);
         int lastIndex = id.lastIndexOf('/');
         if (lastIndex == -1)
             throw new RuntimeException("Id '" + id + "' not a valid Watson id");
-        String name = id.substring(lastIndex + 1);
-        log.trace("name = " + name);
-        return name;
+        return id.substring(lastIndex + 1);
     }
 
-    //    public static String conceptNameToId(String conceptName)
-    //    {
-    //        return "/graphs/" + CiDefaults.GRAPH_ACCOUNT_ID + "/" + CiDefaults.GRAPH_NAME + "/concepts/" + conceptName;
-    //    }
+    public static String conceptNameToId(String accountId, String graphName, String conceptName)
+    {
+        return "/graphs/" + accountId + "/" + graphName + "/concepts/" + conceptName;
+    }
 
     public static Document getDocumentFromId(String documentId, Corpus corpus)
     {
-        log.trace("documentId = " + documentId);
         int lastIndex = documentId.lastIndexOf('/');
         String name = documentId.substring(lastIndex + 1);
-        log.trace("name = " + name);
         return new Document(corpus, name);
     }
 
-    public static String urlToName(String url)
+    /**
+     * Encodes an URL such that it can be used as CI document name.
+     */
+    public static String urlToDocumentName(String url)
     {
         // Document name must satisfy [_\-\w\s]*, so basically only A-Z, a-z, 0-9, _ and - are allowed.
-        //        try {
-        //            return URLEncoder.encode(url, StandardCharsets.UTF_8.toString());
-        //        } catch (UnsupportedEncodingException e) {
-        //            throw new RuntimeException(e);
-        //        }
         String name = url.trim().toLowerCase();
         if (name.startsWith("https://")) name = name.substring(8);
         else if (name.startsWith("http://")) name = name.substring(7);

@@ -1,7 +1,5 @@
 package gmjonker.temp;
 
-import gmjonker.citool.UploadResult;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
