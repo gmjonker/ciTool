@@ -3,9 +3,9 @@ package gmjonker.citool;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.CorpusProcessingState;
-import util.LambdaLogger;
+import gmjonker.citool.util.LambdaLogger;
 
-import static util.Util.simpleSleep;
+import static gmjonker.citool.util.Util.simpleSleep;
 
 public class CiStatus
 {

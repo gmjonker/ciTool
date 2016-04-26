@@ -1,10 +1,13 @@
-package util;
+package gmjonker.citool.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.helpers.MessageFormatter;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -32,7 +35,11 @@ import java.util.function.Supplier;
  */
 public class LambdaLogger implements Logger
 {
-    final Logger logger;
+    private final Logger logger;
+
+    private final Set<String> rememberedErrors = new HashSet<>();
+    private final Set<String> rememberedWarnings = new HashSet<>();
+    private final Set<String> rememberedDebugs = new HashSet<>();
 
     public LambdaLogger(Class clazz)
     {
@@ -45,7 +52,7 @@ public class LambdaLogger implements Logger
 
     public final void error(Supplier<String> argument)
     {
-        if (logger.isTraceEnabled())
+        if (logger.isErrorEnabled())
             error(argument.get());
     }
 
@@ -56,9 +63,21 @@ public class LambdaLogger implements Logger
             error(format, Arrays.stream(arguments).map(Supplier::get).toArray());
     }
 
+    public final void errorOnce(String message)
+    {
+        if (logger.isErrorEnabled()) {
+            if (rememberedErrors.contains(message))
+                return;
+            error(message + " (Won't show this warning again)");
+            rememberedErrors.add(message);
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public final void warn(Supplier<String> argument)
     {
-        if (logger.isTraceEnabled())
+        if (logger.isWarnEnabled())
             warn(argument.get());
     }
 
@@ -69,9 +88,32 @@ public class LambdaLogger implements Logger
             warn(format, Arrays.stream(arguments).map(Supplier::get).toArray());
     }
 
+    public final void warnOnce(String message)
+    {
+        if (logger.isWarnEnabled()) {
+            if (rememberedWarnings.contains(message))
+                return;
+            warn(message + " (Won't show this warning again)");
+            rememberedWarnings.add(message);
+        }
+    }
+
+    public final void warnOnce(String message, Object... argumentArray)
+    {
+        if (logger.isWarnEnabled()) {
+            String formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
+            if (rememberedWarnings.contains(formattedMessage))
+                return;
+            warn(formattedMessage + " (Won't show this warning again)");
+            rememberedWarnings.add(formattedMessage);
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public final void info(Supplier<String> argument)
     {
-        if (logger.isTraceEnabled())
+        if (logger.isInfoEnabled())
             info(argument.get());
     }
 
@@ -82,9 +124,11 @@ public class LambdaLogger implements Logger
             info(format, Arrays.stream(arguments).map(Supplier::get).toArray());
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public final void debug(Supplier<String> argument)
     {
-        if (logger.isTraceEnabled())
+        if (logger.isDebugEnabled())
             debug(argument.get());
     }
 
@@ -94,6 +138,29 @@ public class LambdaLogger implements Logger
         if (logger.isDebugEnabled())
             debug(format, Arrays.stream(arguments).map(Supplier::get).toArray());
     }
+
+    public final void debugOnce(String message)
+    {
+        if (logger.isDebugEnabled()) {
+            if (rememberedDebugs.contains(message))
+                return;
+            debug(message + " (Won't show this message again)");
+            rememberedDebugs.add(message);
+        }
+    }
+
+    public final void debugOnce(String message, Object... argumentArray)
+    {
+        if (logger.isDebugEnabled()) {
+            String formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
+            if (rememberedDebugs.contains(formattedMessage))
+                return;
+            debug(formattedMessage + " (Won't show this message again)");
+            rememberedDebugs.add(formattedMessage);
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
 
     public final void trace(Supplier<String> argument)
     {

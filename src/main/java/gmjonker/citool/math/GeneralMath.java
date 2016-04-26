@@ -1,6 +1,7 @@
-package util;
+package gmjonker.citool.math;
 
 import com.google.common.primitives.Ints;
+import gmjonker.citool.util.LambdaLogger;
 import org.apache.commons.math3.analysis.function.Logit;
 import org.apache.commons.math3.analysis.function.Sigmoid;
 import org.apache.commons.math3.stat.StatUtils;
@@ -9,9 +10,9 @@ import org.apache.commons.math3.stat.descriptive.moment.Variance;
 import java.util.Arrays;
 import java.util.List;
 
+import static gmjonker.citool.math.NaType.NA;
+import static gmjonker.citool.math.NaType.isValue;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static util.NaUtil.NA;
-import static util.NaUtil.isValue;
 
 /**
  * All methods are thread-safe.

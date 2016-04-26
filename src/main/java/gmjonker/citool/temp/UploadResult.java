@@ -1,4 +1,4 @@
-package gmjonker.temp;
+package gmjonker.citool.temp;
 
 /**
  * Contains lists of succeeded and failed uploads.

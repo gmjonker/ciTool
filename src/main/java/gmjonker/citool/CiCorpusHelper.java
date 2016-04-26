@@ -1,31 +1,22 @@
 package gmjonker.citool;
 
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
-import com.ibm.watson.developer_cloud.concept_insights.v2.model.Accounts;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpora;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.service.BadRequestException;
-import util.LambdaLogger;
-import util.Util;
+import gmjonker.citool.util.LambdaLogger;
+import gmjonker.citool.util.Util;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static util.Util.containsNormalized;
-import static util.Util.map;
+import static gmjonker.citool.util.CollectionsUtil.map;
+import static gmjonker.citool.util.StringNormalization.containsNormalized;
 
 public class CiCorpusHelper
 {
     private static final LambdaLogger log = new LambdaLogger(CiCorpusHelper.class);
-
-    public static void getAccountsInfo(ConceptInsights conceptInsightsService)
-    {
-        Accounts accounts = conceptInsightsService.getAccountsInfo();
-        log.info("accounts = " + accounts);
-        String accountId = accounts.getAccounts().get(0).getId();
-        log.info("accountId = " + accountId);
-    }
 
     public static void showCorpora(ConceptInsights conceptInsightsService, String accountId)
     {

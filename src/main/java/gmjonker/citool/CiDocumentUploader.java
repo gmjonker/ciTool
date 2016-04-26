@@ -5,7 +5,7 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Part;
-import util.LambdaLogger;
+import gmjonker.citool.util.LambdaLogger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static util.Util.map;
-import static util.Util.nanosToString;
+import static gmjonker.citool.util.CollectionsUtil.map;
+import static gmjonker.citool.util.FormattingUtil.nanosToString;
 
 /**
  * Uploads documents to Concept Insights.

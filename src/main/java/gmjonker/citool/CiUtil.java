@@ -1,21 +1,29 @@
 package gmjonker.citool;
 
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
+import com.ibm.watson.developer_cloud.concept_insights.v2.model.Accounts;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import gmjonker.citool.util.LambdaLogger;
 
 @SuppressWarnings("WeakerAccess")
 public class CiUtil
 {
-    private static final Logger log = LoggerFactory.getLogger(CiUtil.class);
+    private static final LambdaLogger log = new LambdaLogger(CiUtil.class);
 
     public static ConceptInsights getConceptInsightsService(String user, String password)
     {
         ConceptInsights conceptInsightsService = new ConceptInsights();
         conceptInsightsService.setUsernameAndPassword(user, password);
         return conceptInsightsService;
+    }
+
+    public static void getAccountsInfo(ConceptInsights conceptInsightsService)
+    {
+        Accounts accounts = conceptInsightsService.getAccountsInfo();
+        log.info("accounts = " + accounts);
+        String accountId = accounts.getAccounts().get(0).getId();
+        log.info("first accountId = " + accountId);
     }
 
     public static String getAccountId(ConceptInsights conceptInsights)

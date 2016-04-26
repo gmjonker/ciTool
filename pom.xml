@@ -137,7 +137,7 @@
                         <id>validate</id>
                         <phase>test</phase>
                         <configuration>
-                            <configLocation>google_checks_custom.xml</configLocation>
+                            <configLocation>checkstyle.xml</configLocation>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
