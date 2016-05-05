@@ -6,11 +6,16 @@ A layer on top of the Java SDK that provides some extra functionality, currently
  * Uploading a list of documents to CI, with options of skipping existing documents and deleting other documents
  * Checking status until all is finished
 
-#### Prequisites 
+### Prequisites 
 
-Clone and `mvn install` the `wehaveliftoff/watson-java-sdk` project.
+ * Java 8
+ * Maven 3
+ 
+### Installing locally
+ 
+    $ mvn install
         
-### Git
+### Git hooks
 
 Install the following pre-commit git hook to do a Maven build before committing. It checks that the code builds correctly
 and that the style is ok:

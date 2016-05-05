@@ -1,7 +1,7 @@
 package gmjonker.citool;
 
 /**
- * A document to be uploaded to Concept Insights.
+ * An abstraction of a document to be uploaded to Concept Insights.
  */
 public class CiDocument
 {
