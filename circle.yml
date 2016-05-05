@@ -1,18 +1,3 @@
 machine:
   java:
     version: oraclejdk8
-
-test:
-  post:
-    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-    - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-
-deployment:
-  hub:
-    branch: master
-    commands:
-#      - mvn clean package
-      - mvn docker:build
-      - docker tag $CIRCLE_PROJECT_REPONAME $DOCKER_REGISTRY/$CIRCLE_PROJECT_REPONAME
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push $DOCKER_REGISTRY/$CIRCLE_PROJECT_REPONAME

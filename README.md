@@ -26,7 +26,10 @@ To use this tool in your project, add this to your `pom.xml`:
         <artifactId>WatsonCiTool</artifactId>
         <version>0.1</version>
     </dependency>
+
+See also https://jitpack.io/#gmjonker/WatsonCiTool/0.1
             
+## Development
             
 ### Prequisites 
 

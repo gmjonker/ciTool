@@ -14,8 +14,10 @@ import java.util.ArrayList;
 
 public class CiDocumentConceptRelaterTest
 {
+    // System test that calls Watson, don't include as build test.
     private static void testWithPimmrTestCorpus() throws IOException
     {
+        // Given
         String ciUser = "d1b34af3-c6d3-4501-b2ca-f3fe77358c40";
         String ciPassword = "pwf6XAwsCr0K";
         String ciAccountId = "rection8ment3";
@@ -23,13 +25,16 @@ public class CiDocumentConceptRelaterTest
         ConceptInsights conceptInsightsService = CiUtil.getConceptInsightsService(ciUser, ciPassword);
         Corpus corpus = CiCorpusHelper.getOrCreateCorpus(conceptInsightsService, ciAccountId, ciCorpusName);
         CiDocumentConceptRelater ciDocumentConceptRelater = new CiDocumentConceptRelater(conceptInsightsService, corpus);
-
         ArrayList<Concept> concepts = new ArrayList<>();
         Graph graph = new Graph("wikipedia", "en-20120601");
         concepts.add(new Concept(graph, "Cafeteria"));
         concepts.add(new Concept(graph, "Coffeehouse"));
         concepts.add(new Concept(graph, "Wine"));
+
+        // When
         Table<String, String, Double> allDocumentConceptRelations = ciDocumentConceptRelater.getAllDocumentConceptRelations(concepts);
+
+        // Then we get this
         System.out.println("allDocumentConceptRelations = " + allDocumentConceptRelations);
     }
 
