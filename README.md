@@ -1,11 +1,33 @@
 
 # Watson Concept Insights tool
 
+[![Release](https://jitpack.io/v/gmjonker/WatsonCiTool.svg)](https://jitpack.io/#gmjonker/WatsonCiTool)
+
+
 A layer on top of the Java SDK that provides some extra functionality, currently being:
 
  * Uploading a list of documents to CI, with options of skipping existing documents and deleting other documents
  * Checking status until all is finished
 
+## Usage
+
+To use this tool in your project, add this to your `pom.xml`:
+
+    <repositories>
+        <!-- Jitpack allows using Github/BitBucket/GitLab releases as dependencies -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    
+    <dependency>
+        <groupId>com.github.gmjonker</groupId>
+        <artifactId>WatsonCiTool</artifactId>
+        <version>0.1</version>
+    </dependency>
+            
+            
 ### Prequisites 
 
  * Java 8
