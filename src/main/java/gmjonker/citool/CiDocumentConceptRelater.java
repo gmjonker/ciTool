@@ -36,25 +36,9 @@ public class CiDocumentConceptRelater
      */
     public Table<String, String, Double> getAllDocumentConceptRelations(List<Concept> concepts) throws IOException
     {
-        //        CSVParser csvRecords = Util.readCsvFileWithHeaders("Pimmr tags to Watson concepts - Watson ids.csv");
         CSVPrinter csvPrinter = new CSVPrinter(new FileWriter("documentConceptRelations.csv"), CSVFormat.EXCEL);
 
-        //        ConceptInsights conceptInsightsService = CiDefaults.getConceptInsightsService();
-        //        String accountId = CiDefaults.getAccountId();
-        //        Corpus corpus = CiUtil.getCorpus(conceptInsightsService, accountId, "pimmrA");
         Set<Document> allDocuments = CiCorpusHelper.getAllDocuments(conceptInsightsService, corpus);
-        //        CiCorpusQuerierOtherQueries ciCorpusQuerierOtherQueries = CiCorpusQuerierOtherQueries.getInstance();
-
-        //        Set<String> conceptIdsSet = new HashSet<>();
-        //        Set<Concept> conceptsSet = new HashSet<>();
-
-        //        for (CSVRecord csvRecord : csvRecords) {
-        //            String conceptId = csvRecord.get("Watson concept");
-        //            conceptIdsSet.add(conceptId);
-        //            conceptsSet.add(new Concept(CiDefaults.getSelectedGraph(), CiUtil.getNameFromId(conceptId)));
-        //        }
-        //        ArrayList<String> conceptIdsList = new ArrayList<>(conceptIdsSet);
-        //        ArrayList<Concept> conceptsList = new ArrayList<>(conceptsSet);
 
         Table<String, String, Double> documentConceptRelations = HashBasedTable.create();
 
