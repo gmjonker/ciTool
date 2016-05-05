@@ -1,5 +1,7 @@
 package gmjonker.citool.math;
 
+import gmjonker.citool.util.LambdaLogger;
+
 /**
  * Provides special NA values for double and int. These can be used to indicate missing values.
  * Using primitive types is more memory and cpu efficient than using boxed types. In our case, this is especially useful
@@ -11,7 +13,7 @@ public class NaType
     public static final double NA = Double.NaN;
     public static final int NA_I = Integer.MIN_VALUE + 936;
 
-    private static final gmjonker.citool.util.LambdaLogger log = new gmjonker.citool.util.LambdaLogger(NaType.class);
+    private static final LambdaLogger log = new LambdaLogger(NaType.class);
 
     /** Converts an object to a double, and null to NA. **/
     public static double toSpecialdouble(Object o)

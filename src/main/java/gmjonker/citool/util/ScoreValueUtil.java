@@ -3,7 +3,7 @@ package gmjonker.citool.util;
 import static gmjonker.citool.math.GeneralMath.abs;
 import static gmjonker.citool.math.NaType.isValue;
 
-public class ScoreUtil
+public class ScoreValueUtil
 {
     public static final double SCORE_VALUE_EPSILON = 5E-16;
 
