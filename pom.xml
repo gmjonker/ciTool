@@ -24,6 +24,20 @@
     <dependencies>
 
         <!-- Various general utility packages -->
+        <!-- Optional dependency to (a local installment of) gmjonker/util -->
+        <dependency>
+            <groupId>gmjonker</groupId>
+            <artifactId>util</artifactId>
+            <version>0.2-SNAPSHOT</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <!-- The real dependency to gmjonker/util -->
+        <dependency>
+            <groupId>com.github.gmjonker</groupId>
+            <artifactId>util</artifactId>
+            <version>v0.2</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>

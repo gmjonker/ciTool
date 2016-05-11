@@ -5,13 +5,13 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Part;
-import gmjonker.citool.util.LambdaLogger;
+import gmjonker.util.LambdaLogger;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static gmjonker.citool.util.CollectionsUtil.map;
-import static gmjonker.citool.util.FormattingUtil.nanosToString;
+import static gmjonker.util.CollectionsUtil.map;
+import static gmjonker.util.FormattingUtil.nanosToString;
 
 /**
  * Uploads documents to Concept Insights.

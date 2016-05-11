@@ -4,8 +4,8 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Accounts;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
-import gmjonker.citool.util.IoUtil;
-import gmjonker.citool.util.LambdaLogger;
+import gmjonker.util.IoUtil;
+import gmjonker.util.LambdaLogger;
 
 import java.io.IOException;
 
@@ -45,6 +45,11 @@ public class CiUtil
     public static String conceptNameToId(String accountId, String graphName, String conceptName)
     {
         return "/graphs/" + accountId + "/" + graphName + "/concepts/" + conceptName;
+    }
+
+    public static String conceptNameToId(String graphId, String conceptName)
+    {
+        return graphId + "/concepts/" + conceptName;
     }
 
     public static Document getDocumentFromId(String documentId, Corpus corpus)

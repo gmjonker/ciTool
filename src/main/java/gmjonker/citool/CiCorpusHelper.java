@@ -5,14 +5,13 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpora;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.service.BadRequestException;
-import gmjonker.citool.util.LambdaLogger;
-import gmjonker.citool.util.Util;
+import gmjonker.util.LambdaLogger;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static gmjonker.citool.util.CollectionsUtil.map;
-import static gmjonker.citool.util.StringNormalization.containsNormalized;
+import static gmjonker.util.CollectionsUtil.map;
+import static gmjonker.util.StringNormalization.containsNormalized;
 
 public class CiCorpusHelper
 {
@@ -36,29 +35,6 @@ public class CiCorpusHelper
     public static Corpus getCorpus(ConceptInsights conceptInsightsService, String accountId, String corpusName)
     {
         return conceptInsightsService.getCorpus(new Corpus(accountId, corpusName));
-    }
-
-    public static Corpus getCorpusWithRetries(ConceptInsights conceptInsightsService, String accountId, String corpusName)
-    {
-        Corpus tempCorpus;
-        Corpus corpus;
-
-        tempCorpus = new Corpus(accountId, corpusName);
-        int retryTime = 5;
-        int retriesLeft = 3;
-        while (true) {
-            try {
-                corpus = conceptInsightsService.getCorpus(tempCorpus);
-                return corpus;
-            } catch (Exception e) {
-                if (retriesLeft == 0)
-                    throw new RuntimeException("Calling getCorpusWithRetries failed");
-                else
-                    retriesLeft--;
-                log.error("Getting corpus {} failed, retrying in {} seconds...", corpusName, retryTime, e);
-                Util.simpleSleep(retryTime * 1000);
-            }
-        }
     }
 
     public static Corpus getOrCreateCorpus(ConceptInsights conceptInsightsService, String accountId, String corpusName,

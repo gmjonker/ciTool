@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
-import gmjonker.citool.util.LambdaLogger;
+import gmjonker.util.LambdaLogger;
 
 import java.io.IOException;
 import java.util.List;

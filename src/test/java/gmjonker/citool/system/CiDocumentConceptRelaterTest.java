@@ -8,7 +8,7 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Graph;
 import gmjonker.citool.CiCorpusHelper;
 import gmjonker.citool.CiDocumentConceptRelater;
 import gmjonker.citool.CiUtil;
-import gmjonker.citool.util.Util;
+import gmjonker.util.Util;
 
 import java.io.IOException;
 import java.util.ArrayList;
