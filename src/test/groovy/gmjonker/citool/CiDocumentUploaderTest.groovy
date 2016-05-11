@@ -17,7 +17,7 @@ class CiDocumentUploaderTest extends Specification
         conceptInsights.deleteDocument(_) >> { args -> println "ConceptInsights: Received request to delete document " + args[0].getId() }
         conceptInsights.createDocument(_) >> { args -> println "ConceptInsights: Received request to create document " + args[0].getId() }
         conceptInsights.getCorpusStats(corpus) >> { args -> println "ConceptInsights: Received request to get corpus stats" }
-        def documentUploader = CiDocumentUploader.getReplacingDocumentUploader(conceptInsights, corpus);
+        def documentUploader = CiDocumentUploader.getReplacingDocumentUploader(conceptInsights, corpus, false);
 
         when: "We upload documents"
         documentUploader.uploadDocuments( [ new CiDocument(name: "name", label: "label", body: "body") ] );

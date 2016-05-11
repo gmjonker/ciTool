@@ -4,7 +4,10 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Accounts;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
+import gmjonker.citool.util.IoUtil;
 import gmjonker.citool.util.LambdaLogger;
+
+import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
 public class CiUtil
@@ -64,5 +67,35 @@ public class CiUtil
         name = name.replaceAll("[^_\\-\\w\\s]+", "_");
         log.trace("{} -> {}", url, name);
         return name;
+    }
+
+    public void logTagAndBuildDate()
+    {
+        String javaSystemProperties = "javaSystemProperties.txt";
+        try {
+            IoUtil.readFileOrThrowException(javaSystemProperties).forEach(log::info);
+        } catch (Exception ignored) {
+            log.warn("Java system properties file '" + javaSystemProperties + "' not found");
+        }
+        log.info("Number of processors: {}", Runtime.getRuntime().availableProcessors());
+        String buildServerInfoFileName = "buildServerInfo.txt";
+        try {
+            IoUtil.readFileOrThrowException(buildServerInfoFileName).forEach(log::info);
+        } catch (Exception ignored) {
+            log.warn("Build server info file '" + buildServerInfoFileName + "' not found");
+        }
+        String gitTagFileName = "gitInfo.txt";
+        try {
+            IoUtil.readFileOrThrowException(gitTagFileName).forEach(log::info);
+        } catch (Exception ignored) {
+            // Not doing anything here, since gitInfo.txt is not supposed to be there on development, and it's not
+            // a breaking problem if it doesn't exist on production.
+        }
+        String mavenInfoFileName = "mavenInfo.txt";
+        try {
+            IoUtil.readFileOrThrowException(mavenInfoFileName).forEach(log::info);
+        } catch (IOException e) {
+            log.warn("Maven info file '" + mavenInfoFileName + "' not found");
+        }
     }
 }

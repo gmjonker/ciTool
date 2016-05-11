@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
-import gmjonker.citool.util.IoUtil;
 import gmjonker.citool.util.LambdaLogger;
 
 import java.io.IOException;
@@ -17,6 +16,7 @@ import java.util.Set;
  */
 public class CiDocumentConceptRelater
 {
+
     private final ConceptInsights conceptInsightsService;
     private final Corpus corpus;
 
@@ -29,6 +29,7 @@ public class CiDocumentConceptRelater
     }
 
     /**
+     * Determines the relations between a given set of concepts and all the documents in the corpus.
      * @return A table with the document names in the rows, the concept ids in the columns, and the relations
      *     in the cells.
      */
@@ -59,13 +60,6 @@ public class CiDocumentConceptRelater
         }
 
         log.trace("documentConceptRelations = {}", documentConceptRelations);
-
-        // Write the table to disk, can be handy for debugging/evaluation
-        try {
-            IoUtil.writeTableToCsv(documentConceptRelations, "documentConceptRelations.csv");
-        } catch (IOException e) {
-            log.info("Couldn't write document concept table to file, {}", e);
-        }
 
         return documentConceptRelations;
     }

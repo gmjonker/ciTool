@@ -1,0 +1,11 @@
+java.version       ${java.version}
+java.vendor        ${java.vendor}
+java.home          ${java.home}
+java.vm.version    ${java.vm.version}
+java.class.version ${java.class.version}
+os.name            ${os.name}
+os.arch            ${os.arch}
+os.version         ${os.version}
+user.name          ${user.name}
+user.home          ${user.home}
+user.dir           ${user.dir}

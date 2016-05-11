@@ -5,9 +5,10 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Concept;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Graph;
-import gmjonker.citool.CiDocumentConceptRelater;
 import gmjonker.citool.CiCorpusHelper;
+import gmjonker.citool.CiDocumentConceptRelater;
 import gmjonker.citool.CiUtil;
+import gmjonker.citool.util.Util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,12 +19,12 @@ public class CiDocumentConceptRelaterTest
     private static void testWithPimmrTestCorpus() throws IOException
     {
         // Given
-        String ciUser = "d1b34af3-c6d3-4501-b2ca-f3fe77358c40";
-        String ciPassword = "pwf6XAwsCr0K";
-        String ciAccountId = "rection8ment3";
-        String ciCorpusName = "PimmrTest";
+        String ciUser       = Util.getEnvOrFail("CI_USER");
+        String ciPassword   = Util.getEnvOrFail("CI_PASSWORD");
+        String ciAccountId  = Util.getEnvOrFail("CI_ACCOUNT_ID");
+        String ciCorpusName = Util.getEnvOrDefault("CI_CORPUS_NAME", "Test");
         ConceptInsights conceptInsightsService = CiUtil.getConceptInsightsService(ciUser, ciPassword);
-        Corpus corpus = CiCorpusHelper.getOrCreateCorpus(conceptInsightsService, ciAccountId, ciCorpusName);
+        Corpus corpus = CiCorpusHelper.getOrCreateCorpus(conceptInsightsService, ciAccountId, ciCorpusName, false);
         CiDocumentConceptRelater ciDocumentConceptRelater = new CiDocumentConceptRelater(conceptInsightsService, corpus);
         ArrayList<Concept> concepts = new ArrayList<>();
         Graph graph = new Graph("wikipedia", "en-20120601");

@@ -7,10 +7,7 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Part;
 import gmjonker.citool.util.LambdaLogger;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static gmjonker.citool.util.CollectionsUtil.map;
@@ -21,25 +18,28 @@ import static gmjonker.citool.util.FormattingUtil.nanosToString;
  **/
 public class CiDocumentUploader
 {
-    public static CiDocumentUploader getReplacingDocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus)
+    public static CiDocumentUploader getReplacingDocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus,
+            boolean interactive)
     {
-        return new CiDocumentUploader(conceptInsightsService, corpus, true, true);
+        return new CiDocumentUploader(conceptInsightsService, corpus, true, true, interactive);
     }
 
     private final ConceptInsights conceptInsightsService;
     private final Corpus corpus;
     private final boolean overwriteExisting;
     private final boolean deleteOthers;
+    private final boolean interactive;
 
     private static final LambdaLogger log = new LambdaLogger(CiDocumentUploader.class);
 
     public CiDocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus, boolean overwriteExisting,
-            boolean deleteOthers)
+            boolean deleteOthers, boolean interactive)
     {
         this.conceptInsightsService = conceptInsightsService;
         this.corpus = corpus;
         this.overwriteExisting = overwriteExisting;
         this.deleteOthers = deleteOthers;
+        this.interactive = interactive;
     }
 
     /**
@@ -76,7 +76,18 @@ public class CiDocumentUploader
             Set<String> namesToDelete = new HashSet<>();
             namesToDelete.addAll(allDocumentNames);
             namesToDelete.removeAll(map(ciDocuments, doc -> doc.name));
-            log.debug("Documents to delete: {}", namesToDelete);
+            log.debug("Document ids to delete: {}", namesToDelete);
+
+            if (interactive) {
+                System.out.println("Continue? [Yn]");
+                Scanner scanner = new Scanner(System.in);
+                String answer = scanner.nextLine().toLowerCase();
+                if (!Objects.equals(answer, "y") && !Objects.equals(answer, "")) {
+                    System.out.println("Exiting.");
+                    System.exit(-1);
+                }
+            }
+
             for (String documentName : namesToDelete)
                 documentsToDelete.add(new Document(corpus, documentName));
         }

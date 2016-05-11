@@ -61,7 +61,8 @@ public class CiCorpusHelper
         }
     }
 
-    public static Corpus getOrCreateCorpus(ConceptInsights conceptInsightsService, String accountId, String corpusName)
+    public static Corpus getOrCreateCorpus(ConceptInsights conceptInsightsService, String accountId, String corpusName,
+            boolean interactive)
     {
         try
         {
@@ -70,17 +71,18 @@ public class CiCorpusHelper
         catch (BadRequestException e) {
             if (Objects.equals(e.getMessage(), "not found")) {
                 log.info("Corpus '{}' does not exist, will now create", corpusName);
-                log.info("Are you sure? [yn]:");
-                Scanner scanner = new Scanner(System.in);
-                String line = scanner.nextLine().toLowerCase();
-                if (line.startsWith("y")) {
-                    Corpus corpus = createCorpus(conceptInsightsService, accountId, corpusName);
-                    log.info("Corpus '{}' created", corpus.getName());
-                    return corpus;
-                } else {
-                    log.info("Aborting");
-                    System.exit(0);
+                if (interactive) {
+                    log.info("Are you sure? [yN]:");
+                    Scanner scanner = new Scanner(System.in);
+                    String line = scanner.nextLine().toLowerCase();
+                    if (!line.startsWith("y")) {
+                        log.info("Aborting");
+                        System.exit(0);
+                    }
                 }
+                Corpus corpus = createCorpus(conceptInsightsService, accountId, corpusName);
+                log.info("Corpus '{}' created", corpus.getName());
+                return corpus;
             }
             throw e;
         }
