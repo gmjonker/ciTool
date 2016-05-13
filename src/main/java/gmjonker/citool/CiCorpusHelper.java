@@ -5,14 +5,13 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpora;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.service.BadRequestException;
-import gmjonker.citool.util.LambdaLogger;
-import gmjonker.citool.util.Util;
+import gmjonker.util.LambdaLogger;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static gmjonker.citool.util.CollectionsUtil.map;
-import static gmjonker.citool.util.StringNormalization.containsNormalized;
+import static gmjonker.util.CollectionsUtil.map;
+import static gmjonker.util.StringNormalization.containsNormalized;
 
 public class CiCorpusHelper
 {
@@ -38,30 +37,8 @@ public class CiCorpusHelper
         return conceptInsightsService.getCorpus(new Corpus(accountId, corpusName));
     }
 
-    public static Corpus getCorpusWithRetries(ConceptInsights conceptInsightsService, String accountId, String corpusName)
-    {
-        Corpus tempCorpus;
-        Corpus corpus;
-
-        tempCorpus = new Corpus(accountId, corpusName);
-        int retryTime = 5;
-        int retriesLeft = 3;
-        while (true) {
-            try {
-                corpus = conceptInsightsService.getCorpus(tempCorpus);
-                return corpus;
-            } catch (Exception e) {
-                if (retriesLeft == 0)
-                    throw new RuntimeException("Calling getCorpusWithRetries failed");
-                else
-                    retriesLeft--;
-                log.error("Getting corpus {} failed, retrying in {} seconds...", corpusName, retryTime, e);
-                Util.simpleSleep(retryTime * 1000);
-            }
-        }
-    }
-
-    public static Corpus getOrCreateCorpus(ConceptInsights conceptInsightsService, String accountId, String corpusName)
+    public static Corpus getOrCreateCorpus(ConceptInsights conceptInsightsService, String accountId, String corpusName,
+            boolean interactive)
     {
         try
         {
@@ -70,17 +47,18 @@ public class CiCorpusHelper
         catch (BadRequestException e) {
             if (Objects.equals(e.getMessage(), "not found")) {
                 log.info("Corpus '{}' does not exist, will now create", corpusName);
-                log.info("Are you sure? [yn]:");
-                Scanner scanner = new Scanner(System.in);
-                String line = scanner.nextLine().toLowerCase();
-                if (line.startsWith("y")) {
-                    Corpus corpus = createCorpus(conceptInsightsService, accountId, corpusName);
-                    log.info("Corpus '{}' created", corpus.getName());
-                    return corpus;
-                } else {
-                    log.info("Aborting");
-                    System.exit(0);
+                if (interactive) {
+                    log.info("Are you sure? [yN]:");
+                    Scanner scanner = new Scanner(System.in);
+                    String line = scanner.nextLine().toLowerCase();
+                    if (!line.startsWith("y")) {
+                        log.info("Aborting");
+                        System.exit(0);
+                    }
                 }
+                Corpus corpus = createCorpus(conceptInsightsService, accountId, corpusName);
+                log.info("Corpus '{}' created", corpus.getName());
+                return corpus;
             }
             throw e;
         }

@@ -2,19 +2,44 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>gmjonker</groupId>
     <artifactId>watson-ci-tool</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- Gives "Invalid POM" problem when deploying via JitPack-->
+        <!--<maven.build.timestamp>${maven.build.timestamp}</maven.build.timestamp>-->
+        <!--<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>-->
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <dependencies>
 
         <!-- Various general utility packages -->
+        <!--&lt;!&ndash; Optional dependency to (a local installment of) gmjonker/util &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>gmjonker</groupId>-->
+            <!--<artifactId>util</artifactId>-->
+            <!--<version>0.2-SNAPSHOT</version>-->
+            <!--<scope>compile</scope>-->
+            <!--<optional>true</optional>-->
+        <!--</dependency>-->
+        <!-- The real dependency to gmjonker/util -->
+        <dependency>
+            <groupId>com.github.gmjonker</groupId>
+            <artifactId>util</artifactId>
+            <version>-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -79,9 +104,9 @@
 
         <!-- IBM Watson Concept Insights -->
         <dependency>
-            <groupId>nl.accesstotalent</groupId>
+            <groupId>com.github.wehaveliftoff</groupId>
             <artifactId>watson-java-sdk</artifactId>
-            <version>2.8-AMEN</version>
+            <version>watson-java-sdk-2.8-AMEN</version>
         </dependency>
 
     </dependencies>
@@ -145,6 +170,21 @@
                         </configuration>
                         <goals>
                             <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Add sources jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
