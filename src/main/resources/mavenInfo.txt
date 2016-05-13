@@ -1,1 +1,0 @@
-Maven build date: ${maven.build.timestamp}
