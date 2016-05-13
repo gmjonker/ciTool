@@ -22,15 +22,6 @@
 
     <dependencies>
         <!-- Various general utility packages -->
-        <!--&lt;!&ndash; Optional dependency to (a local installment of) gmjonker/util &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>gmjonker</groupId>-->
-            <!--<artifactId>util</artifactId>-->
-            <!--<version>0.2-SNAPSHOT</version>-->
-            <!--<scope>compile</scope>-->
-            <!--<optional>true</optional>-->
-        <!--</dependency>-->
-        <!-- The real dependency to gmjonker/util -->
         <dependency>
             <groupId>com.github.gmjonker</groupId>
             <artifactId>util</artifactId>
