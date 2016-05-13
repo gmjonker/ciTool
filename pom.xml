@@ -25,7 +25,7 @@
         <dependency>
             <groupId>com.github.gmjonker</groupId>
             <artifactId>util</artifactId>
-            <version>560980d2fa</version>
+            <version>6a8998eee7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

@@ -16,6 +16,7 @@ import java.util.Set;
  */
 public class CiDocumentConceptRelater
 {
+    public static final int NO_LIMIT = -1;
 
     private final ConceptInsights conceptInsightsService;
     private final Corpus corpus;
@@ -30,12 +31,13 @@ public class CiDocumentConceptRelater
 
     /**
      * Determines the relations between a given set of concepts and all the documents in the corpus.
+     * @param limit Limit on the number of documents processed
      * @return A table with the document names in the rows, the concept ids in the columns, and the relations
      *     in the cells.
      */
-    public Table<String, String, Double> getAllDocumentConceptRelations(List<Concept> concepts) throws IOException
+    public Table<String, String, Double> getDocumentConceptRelations(List<Concept> concepts, int limit) throws IOException
     {
-        Set<Document> allDocuments = CiCorpusHelper.getAllDocuments(conceptInsightsService, corpus);
+        Set<Document> allDocuments = CiCorpusHelper.getDocuments(conceptInsightsService, corpus, limit);
         Table<String, String, Double> documentConceptRelations = HashBasedTable.create();
 
         int count = 0;

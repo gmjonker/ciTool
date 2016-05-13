@@ -15,6 +15,8 @@ import static gmjonker.util.StringNormalization.containsNormalized;
 
 public class CiCorpusHelper
 {
+    public static final int NO_LIMIT = -1;
+
     private static final LambdaLogger log = new LambdaLogger(CiCorpusHelper.class);
 
     public static void showCorpora(ConceptInsights conceptInsightsService, String accountId)
@@ -64,6 +66,7 @@ public class CiCorpusHelper
         }
     }
 
+    @Deprecated
     public static Set<String> getAllDocumentIds(ConceptInsights conceptInsightsService, Corpus corpus)
     {
         log.debug("Getting all documents from corpus '{}'...", CiUtil.getNameFromId(corpus.getId()));
@@ -77,19 +80,43 @@ public class CiCorpusHelper
         return new HashSet<>(documentIds);
     }
 
+    public static Set<String> getDocumentIds(ConceptInsights conceptInsightsService, Corpus corpus, int limit)
+    {
+        log.debug("Getting {} documents from corpus '{}'...", limit == NO_LIMIT ? "all" : limit,
+                CiUtil.getNameFromId(corpus.getId()));
+        Map<String, Object> parameters = new HashMap<>();
+        if (limit == NO_LIMIT)
+            parameters.put(ConceptInsights.LIMIT, 0); // 0 will get the maximum of 100.000 documents
+        else
+            parameters.put(ConceptInsights.LIMIT, limit); // 0 will get the maximum of 100.000 documents
+        List<String> documentIds = conceptInsightsService.listDocuments(corpus, parameters).getDocuments();
+        log.trace("documentIds = {}", () -> documentIds);
+        if (documentIds.size() == 100000)
+            log.warn("Received 100000 documents from CI. This means that there are probablye more than 100000 documents," +
+                    "so we should fetch documents incrementally.");
+        return new HashSet<>(documentIds);
+    }
+
+    @Deprecated
     public static Set<String> getAllDocumentNames(ConceptInsights conceptInsightsService, Corpus corpus)
     {
         return map(getAllDocumentIds(conceptInsightsService, corpus), CiUtil::getNameFromId);
     }
 
+    @Deprecated
     public static Set<Document> getAllDocuments(ConceptInsights conceptInsightsService, Corpus corpus)
     {
         return map(getAllDocumentIds(conceptInsightsService, corpus), id -> CiUtil.getDocumentFromId(id, corpus));
     }
 
+    public static Set<Document> getDocuments(ConceptInsights conceptInsightsService, Corpus corpus, int limit)
+    {
+        return map(getDocumentIds(conceptInsightsService, corpus, limit), id -> CiUtil.getDocumentFromId(id, corpus));
+    }
+
     public static List<Document> findDocumentsByPartialName(ConceptInsights conceptInsightsService, Corpus corpus, String query)
     {
-        return getAllDocumentIds(conceptInsightsService, corpus).stream()
+        return getDocumentIds(conceptInsightsService, corpus, NO_LIMIT).stream()
                 .filter(
                         id -> containsNormalized(CiUtil.getNameFromId(id), query)
                 )

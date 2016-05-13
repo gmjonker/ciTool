@@ -33,7 +33,7 @@ public class CiDocumentConceptRelaterTest
         concepts.add(new Concept(graph, "Wine"));
 
         // When
-        Table<String, String, Double> allDocumentConceptRelations = ciDocumentConceptRelater.getAllDocumentConceptRelations(concepts);
+        Table<String, String, Double> allDocumentConceptRelations = ciDocumentConceptRelater.getDocumentConceptRelations(concepts, CiDocumentConceptRelater.NO_LIMIT);
 
         // Then we get this
         System.out.println("allDocumentConceptRelations = " + allDocumentConceptRelations);
