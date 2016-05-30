@@ -25,4 +25,23 @@ class CiDocumentUploaderTest extends Specification
         then: "No errors are thrown"
         noExceptionThrown()
     }
+
+    def "Skip uploading empty documents"()
+    {
+        given: "We have a Concept Insights service"
+        def corpus = Mock(Corpus)
+        corpus.getId() >> "/corpora/myAccount/myCorpus"
+        def conceptInsights = Mock(ConceptInsights)
+        conceptInsights.listDocuments(corpus, _) >> new Documents(documents: [ "/corpora/myAccount/myCorpus/documents/myDocId" ])
+        conceptInsights.deleteDocument(_) >> { args -> println "ConceptInsights: Received request to delete document " + args[0].getId() }
+        conceptInsights.createDocument(_) >> { args -> println "ConceptInsights: Received request to create document " + args[0].getId() }
+        conceptInsights.getCorpusStats(corpus) >> { args -> println "ConceptInsights: Received request to get corpus stats" }
+        def documentUploader = CiDocumentUploader.getReplacingDocumentUploader(conceptInsights, corpus, false);
+
+        when: "We upload empty document"
+        documentUploader.uploadDocuments( [ new CiDocument(name: "name", label: "label", body: "") ] );
+
+        then: "No errors are thrown"
+        noExceptionThrown()
+    }
 }

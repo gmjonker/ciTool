@@ -21,24 +21,26 @@ public class CiDocumentUploader
     public static CiDocumentUploader getReplacingDocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus,
             boolean interactive)
     {
-        return new CiDocumentUploader(conceptInsightsService, corpus, true, true, interactive);
+        return new CiDocumentUploader(conceptInsightsService, corpus, true, true, true, interactive);
     }
 
     private final ConceptInsights conceptInsightsService;
     private final Corpus corpus;
     private final boolean overwriteExisting;
     private final boolean deleteOthers;
+    private final boolean skipUploadEmptyDocuments;
     private final boolean interactive;
 
     private static final LambdaLogger log = new LambdaLogger(CiDocumentUploader.class);
 
     public CiDocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus, boolean overwriteExisting,
-            boolean deleteOthers, boolean interactive)
+            boolean deleteOthers, boolean skipUploadEmptyDocuments, boolean interactive)
     {
         this.conceptInsightsService = conceptInsightsService;
         this.corpus = corpus;
         this.overwriteExisting = overwriteExisting;
         this.deleteOthers = deleteOthers;
+        this.skipUploadEmptyDocuments = skipUploadEmptyDocuments;
         this.interactive = interactive;
     }
 
@@ -126,12 +128,16 @@ public class CiDocumentUploader
                 log.trace(addedDocument.getLabel());
                 continue;
             } else {
+                long size = addedDocument.getParts().stream().mapToLong(part -> part.getData().length()).sum();
+                if (skipUploadEmptyDocuments && size == 0) {
+                    log.debug("Document '{}' empty, skipping.", addedDocument.getName());
+                    continue;
+                }
                 log.trace("Adding document: " + addedDocument);
                 try {
                     Stopwatch stopwatch = Stopwatch.createStarted();
                     conceptInsightsService.createDocument(addedDocument);
                     stopwatch.stop();
-                    long size = addedDocument.getParts().stream().mapToLong(part -> part.getData().length()).sum();
                     log.debug("Added document {}/{}: {} - {} ({} kb) in {}", i, documentsToAdd.size(), addedDocument.getName(),
                             addedDocument.getLabel(), size / 1000, stopwatch);
                     numUploadedDocs++;
