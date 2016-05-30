@@ -6,9 +6,15 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import gmjonker.util.LambdaLogger;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
+
 @SuppressWarnings("WeakerAccess")
 public class CiUtil
 {
+    public static final List<String> CONCEPT_NAMES_IN_WIKIPEDIA_BUT_NOT_IN_WATSON = asList( "Food_hall" );
+
     private static final LambdaLogger log = new LambdaLogger(CiUtil.class);
 
     public static ConceptInsights getConceptInsightsService(String user, String password)

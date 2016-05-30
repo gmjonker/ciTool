@@ -80,6 +80,9 @@ public class CiCorpusHelper
         return new HashSet<>(documentIds);
     }
 
+    /**
+     * @param limit Limit, or -1 for no limit.
+     */
     public static Set<String> getDocumentIds(ConceptInsights conceptInsightsService, Corpus corpus, int limit)
     {
         log.debug("Getting {} documents from corpus '{}'...", limit == NO_LIMIT ? "all" : limit,
@@ -109,6 +112,9 @@ public class CiCorpusHelper
         return map(getAllDocumentIds(conceptInsightsService, corpus), id -> CiUtil.getDocumentFromId(id, corpus));
     }
 
+    /**
+     * @param limit Limit, or -1 for no limit.
+     */
     public static Set<Document> getDocuments(ConceptInsights conceptInsightsService, Corpus corpus, int limit)
     {
         return map(getDocumentIds(conceptInsightsService, corpus, limit), id -> CiUtil.getDocumentFromId(id, corpus));

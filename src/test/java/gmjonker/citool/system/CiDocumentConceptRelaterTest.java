@@ -25,7 +25,7 @@ public class CiDocumentConceptRelaterTest
         String ciCorpusName = Util.getEnvOrDefault("CI_CORPUS_NAME", "Test");
         ConceptInsights conceptInsightsService = CiUtil.getConceptInsightsService(ciUser, ciPassword);
         Corpus corpus = CiCorpusHelper.getOrCreateCorpus(conceptInsightsService, ciAccountId, ciCorpusName, false);
-        CiDocumentConceptRelater ciDocumentConceptRelater = new CiDocumentConceptRelater(conceptInsightsService, corpus);
+        CiDocumentConceptRelater ciDocumentConceptRelater = new CiDocumentConceptRelater(conceptInsightsService, corpus, true);
         ArrayList<Concept> concepts = new ArrayList<>();
         Graph graph = new Graph("wikipedia", "en-20120601");
         concepts.add(new Concept(graph, "Cafeteria"));
@@ -33,7 +33,8 @@ public class CiDocumentConceptRelaterTest
         concepts.add(new Concept(graph, "Wine"));
 
         // When
-        Table<String, String, Double> allDocumentConceptRelations = ciDocumentConceptRelater.getDocumentConceptRelations(concepts, CiDocumentConceptRelater.NO_LIMIT);
+        Table<String, String, Double> allDocumentConceptRelations =
+                ciDocumentConceptRelater.getDocumentConceptNameRelations(concepts, 5);
 
         // Then we get this
         System.out.println("allDocumentConceptRelations = " + allDocumentConceptRelations);

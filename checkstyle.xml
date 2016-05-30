@@ -149,7 +149,7 @@
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="VariableDeclarationUsageDistance">
             <!-- Relax distance of 3, it is too restrictive -->
-            <property name="allowedDistance" value="6"/>
+            <property name="allowedDistance" value="8"/>
         </module>
         <!-- Clashes with Intellij IDEA's default -->
         <!--<module name="CustomImportOrder">-->

@@ -24,11 +24,10 @@ import static java.util.Collections.emptyList;
 @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
 public class CiCorpusQuerier
 {
-
-    private static final LambdaLogger log = new LambdaLogger(CiCorpusQuerier.class);
-
     private ConceptInsights conceptInsightsService;
     private Corpus corpus;
+
+    private static final LambdaLogger log = new LambdaLogger(CiCorpusQuerier.class);
 
     public CiCorpusQuerier(ConceptInsights conceptInsightsService, Corpus corpus)
     {
@@ -71,7 +70,7 @@ public class CiCorpusQuerier
             return matchedDocuments;
         } catch (InternalServerErrorException e) {
             log.error("Internal server error while finding documents by concept", e);
-            System.out.println("e.getResponse() = " + e.getResponse());
+            // System.out.println("e.getResponse() = " + e.getResponse());
             return asList(new MatchedDocument("Watson internal server error", "Watson interal server error", 0.0, emptyList()));
         }
     }
