@@ -19,9 +19,9 @@ import static gmjonker.util.FormattingUtil.nanosToString;
 public class CiDocumentUploader
 {
     public static CiDocumentUploader getReplacingDocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus,
-            boolean interactive)
+            boolean interactive, boolean noDelete)
     {
-        return new CiDocumentUploader(conceptInsightsService, corpus, true, true, true, interactive);
+        return new CiDocumentUploader(conceptInsightsService, corpus, true, ! noDelete, true, interactive);
     }
 
     private final ConceptInsights conceptInsightsService;
@@ -56,6 +56,7 @@ public class CiDocumentUploader
         // Get names of documents currently in CI
         Set<String> allDocumentNames = CiCorpusHelper.getAllDocumentNames(conceptInsightsService, corpus);
         log.info("There are currently {} documents in CI", allDocumentNames.size());
+        log.trace("allDocumentNames = {}", allDocumentNames);
 
         // Convert ciDocuments to documents that can be added
         List<Document> documentsToAdd = new ArrayList<>();
@@ -68,6 +69,8 @@ public class CiDocumentUploader
             // userFields.put("companyName", ciDocument.companyName);
             // document.setUserFields(userFields);
             document.addParts(new Part("Text part", ciDocument.body, "text/plain"));
+            if (ciDocument.userFields != null && ! ciDocument.userFields.isEmpty())
+                document.setUserFields(ciDocument.userFields);
             log.trace("document id: {} ", document::getId);
             documentsToAdd.add(document);
         }
@@ -80,11 +83,11 @@ public class CiDocumentUploader
             namesToDelete.removeAll(map(ciDocuments, doc -> doc.name));
             log.debug("Document ids to delete: {}", namesToDelete);
 
-            if (interactive) {
+            if ( ! namesToDelete.isEmpty() && interactive) {
                 System.out.println("Continue? [Yn]");
                 Scanner scanner = new Scanner(System.in);
                 String answer = scanner.nextLine().toLowerCase();
-                if (!Objects.equals(answer, "y") && !Objects.equals(answer, "")) {
+                if (!Objects.equals(answer, "y") && ! Objects.equals(answer, "")) {
                     System.out.println("Exiting.");
                     System.exit(-1);
                 }

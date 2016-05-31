@@ -11,11 +11,13 @@ import org.apache.commons.csv.CSVPrinter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import static gmjonker.util.CollectionsUtil.filter;
 import static gmjonker.util.CollectionsUtil.map;
+import static java.util.Collections.emptySet;
 
 /**
  * Queries Watson to find relations between all documents in a corpus and a given list of concepts.
@@ -47,7 +49,22 @@ public class CiDocumentConceptRelater
      */
     public Table<String, String, Double> getDocumentConceptNameRelations(List<Concept> concepts, int limit) throws IOException
     {
-        Set<Document> allDocuments = CiCorpusHelper.getDocuments(conceptInsightsService, corpus, limit);
+        return getDocumentConceptNameRelations(concepts, limit, emptySet());
+    }
+
+    /**
+     * Determines the relations between a given set of concepts and all the documents in the corpus.
+     * @param limit Limit on the number of documents processed
+     * @param onlyIds Only process these documents
+     * @return A table with the document names in the rows, the concept names in the columns, and the relations
+     *     in the cells.
+     */
+    public Table<String, String, Double> getDocumentConceptNameRelations(List<Concept> concepts, int limit,
+            Collection<String> onlyIds) throws IOException
+    {
+        log.trace("onlyIds = {}", onlyIds);
+
+        Set<Document> documents = CiCorpusHelper.getDocuments(conceptInsightsService, corpus, limit, onlyIds);
         Table<String, String, Double> documentConceptRelations = HashBasedTable.create();
         @Cleanup CSVPrinter failedRequestsPrinter = null;
         try {
@@ -69,10 +86,11 @@ public class CiDocumentConceptRelater
 
         int count = 0;
         Multiset<Integer> successfulConceptCounts = HashMultiset.create();
-        for (Document document : allDocuments)
+        for (Document document : documents)
         {
             String documentName = document.getName();
-            log.debug("Getting concept relations for doc {}/{}: '{}'", count, allDocuments.size(), documentName);
+            log.debug("Getting concept relations for doc {}/{}: '{}' ({})", count + 1, documents.size(), documentName,
+                    document.getLabel());
             // Do concepts in small chunks, otherwise Watson goes boom.
             List<List<Concept>> lists = Lists.partition(concepts, CONCEPT_BATCH_SIZE);
             System.out.println("\b\b");

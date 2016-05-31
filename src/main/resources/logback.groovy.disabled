@@ -10,6 +10,8 @@ appender("STDOUT", ConsoleAppender) {
 
 logger("gmjonker", DEBUG)
 
-//logger("gmjonker.citool.CiCorpusHelper", TRACE)
+logger("gmjonker.citool.CiDocumentConceptRelater", TRACE)
+logger("gmjonker.citool.CiDocumentUploader", TRACE)
+logger("gmjonker.citool.CiCorpusHelper", TRACE)
 
 root(DEBUG, ["STDOUT"])

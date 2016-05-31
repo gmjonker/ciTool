@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import static gmjonker.util.CollectionsUtil.map;
 import static gmjonker.util.StringNormalization.containsNormalized;
+import static java.util.Collections.emptySet;
 
 public class CiCorpusHelper
 {
@@ -85,15 +86,33 @@ public class CiCorpusHelper
      */
     public static Set<String> getDocumentIds(ConceptInsights conceptInsightsService, Corpus corpus, int limit)
     {
-        log.debug("Getting {} documents from corpus '{}'...", limit == NO_LIMIT ? "all" : limit,
-                CiUtil.getNameFromId(corpus.getId()));
+        return getDocumentIds(conceptInsightsService, corpus, limit, emptySet());
+    }
+
+    /**
+     * @param limit Limit, or -1 for no limit.
+     * @param onlyIds Only process these documents.
+     */
+    public static Set<String> getDocumentIds(ConceptInsights conceptInsightsService, Corpus corpus, int limit,
+            Collection<String> onlyIds)
+    {
+        if (onlyIds.isEmpty())
+            log.debug("Getting {} documents from corpus '{}'...", limit == NO_LIMIT ? "all" : limit,
+                    CiUtil.getNameFromId(corpus.getId()));
+        else
+            log.debug("Getting documents {} from corpus '{}'...", onlyIds, CiUtil.getNameFromId(corpus.getId()));
+
         Map<String, Object> parameters = new HashMap<>();
         if (limit == NO_LIMIT)
             parameters.put(ConceptInsights.LIMIT, 0); // 0 will get the maximum of 100.000 documents
         else
             parameters.put(ConceptInsights.LIMIT, limit); // 0 will get the maximum of 100.000 documents
         List<String> documentIds = conceptInsightsService.listDocuments(corpus, parameters).getDocuments();
+        System.out.println("documentIds = " + documentIds);
+        if ( ! onlyIds.isEmpty())
+            documentIds.retainAll(onlyIds);
         log.trace("documentIds = {}", () -> documentIds);
+        System.out.println("documentIds = " + documentIds);
         if (documentIds.size() == 100000)
             log.warn("Received 100000 documents from CI. This means that there are probablye more than 100000 documents," +
                     "so we should fetch documents incrementally.");
@@ -117,7 +136,17 @@ public class CiCorpusHelper
      */
     public static Set<Document> getDocuments(ConceptInsights conceptInsightsService, Corpus corpus, int limit)
     {
-        return map(getDocumentIds(conceptInsightsService, corpus, limit), id -> CiUtil.getDocumentFromId(id, corpus));
+        return getDocuments(conceptInsightsService, corpus, limit, emptySet());
+    }
+
+    /**
+     * @param limit Limit, or -1 for no limit.
+     * @param onlyIds Only get these documents.
+     */
+    public static Set<Document> getDocuments(ConceptInsights conceptInsightsService, Corpus corpus, int limit,
+            Collection<String> onlyIds)
+    {
+        return map(getDocumentIds(conceptInsightsService, corpus, limit, onlyIds), id -> CiUtil.getDocumentFromId(id, corpus));
     }
 
     public static List<Document> findDocumentsByPartialName(ConceptInsights conceptInsightsService, Corpus corpus, String query)

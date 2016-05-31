@@ -6,8 +6,10 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import gmjonker.util.LambdaLogger;
 
+import java.util.Collection;
 import java.util.List;
 
+import static gmjonker.util.CollectionsUtil.map;
 import static java.util.Arrays.asList;
 
 @SuppressWarnings("WeakerAccess")
@@ -53,6 +55,16 @@ public class CiUtil
     public static String conceptNameToId(String graphId, String conceptName)
     {
         return graphId + "/concepts/" + conceptName;
+    }
+
+    public static String documentNameToId(String accountId, String corpusName, String documentName)
+    {
+        return "/corpora/" + accountId + "/" + corpusName + "/documents/" + documentName;
+    }
+
+    public static Collection<String> documentNamesToIds(String accountId, String corpusName, Collection<String> documentNames)
+    {
+        return map(documentNames, documentName -> documentNameToId(accountId, corpusName, documentName));
     }
 
     public static Document getDocumentFromId(String documentId, Corpus corpus)

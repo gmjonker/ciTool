@@ -21,6 +21,7 @@
     </repositories>
 
     <dependencies>
+        <!-- "IDE" dependencies -->
 
         <!--<dependency>-->
             <!--<groupId>gmjonker</groupId>-->
@@ -28,12 +29,22 @@
             <!--<version>2.9-SNAPSHOT</version>-->
             <!--<scope>compile</scope>-->
         <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>gmjonker</groupId>-->
+            <!--<artifactId>util</artifactId>-->
+            <!--<version>0.1-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
-        <!-- IBM Watson Concept Insights -->
+        <!-- Jitpack dependencies -->
         <dependency>
             <groupId>com.github.gmjonker</groupId>
             <artifactId>watson-java-sdk</artifactId>
             <version>d5bb68697a</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gmjonker</groupId>
+            <artifactId>util</artifactId>
+            <version>7cbe5277e5</version>
         </dependency>
 
         <!-- Lombok -->
@@ -43,11 +54,6 @@
             <version>1.16.8</version>
         </dependency>
         <!-- Various general utility packages -->
-        <dependency>
-            <groupId>com.github.gmjonker</groupId>
-            <artifactId>util</artifactId>
-            <version>97237f5c00</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
