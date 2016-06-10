@@ -62,6 +62,7 @@ public class CiDocumentConceptRelater
     public Table<String, String, Double> getDocumentConceptNameRelations(List<Concept> concepts, int limit,
             Collection<String> onlyIds) throws IOException
     {
+        log.trace("concepts = {}", concepts);
         log.trace("onlyIds = {}", onlyIds);
 
         Set<Document> documents = CiCorpusHelper.getDocuments(conceptInsightsService, corpus, limit, onlyIds);
@@ -83,6 +84,7 @@ public class CiDocumentConceptRelater
                     }
                 }
         );
+        log.trace("Filtered concepts: {}", concepts);
 
         int count = 0;
         Multiset<Integer> successfulConceptCounts = HashMultiset.create();

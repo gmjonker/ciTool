@@ -73,11 +73,11 @@ public class CiGraphQuerier
         try {
             ConceptMetadata conceptMetadata = conceptInsightsService.getConcept(new Concept(graph, conceptName));
             log.debug("Concept '{}' found in graph '{}'", conceptName, graph.getName());
-            log.debug("ConceptMetadata: {}", conceptMetadata);
+            log.trace("ConceptMetadata: {}", conceptMetadata);
             conceptNamesFound.add(conceptName);
             return true;
         } catch (NotFoundException e) {
-            log.debug("Concept '{}' not found in graph '{}'", conceptName, graph.getName());
+            log.warn("Concept '{}' not found in graph '{}'", conceptName, graph.getName());
             conceptNamesNotFound.add(conceptName);
         } catch (ServiceResponseException e) {
             log.error("Something went wrong while looking for concept '{}' in graph '{}'", conceptName, graph.getName(), e);
