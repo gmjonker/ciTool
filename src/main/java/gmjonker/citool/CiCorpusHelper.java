@@ -112,7 +112,6 @@ public class CiCorpusHelper
         if ( ! onlyIds.isEmpty())
             documentIds.retainAll(onlyIds);
         log.trace("documentIds = {}", () -> documentIds);
-        System.out.println("documentIds = " + documentIds);
         if (documentIds.size() == 100000)
             log.warn("Received 100000 documents from CI. This means that there are probablye more than 100000 documents," +
                     "so we should fetch documents incrementally.");
@@ -123,6 +122,11 @@ public class CiCorpusHelper
     public static Set<String> getAllDocumentNames(ConceptInsights conceptInsightsService, Corpus corpus)
     {
         return map(getAllDocumentIds(conceptInsightsService, corpus), CiUtil::getNameFromId);
+    }
+
+    public static Document getDocumentById(ConceptInsights conceptInsightsService, Corpus corpus, String documentId)
+    {
+        return conceptInsightsService.getDocument(new Document(corpus, CiUtil.getNameFromId(documentId)));
     }
 
     @Deprecated

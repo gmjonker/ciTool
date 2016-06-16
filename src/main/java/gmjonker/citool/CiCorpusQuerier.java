@@ -21,7 +21,7 @@ import static java.util.Collections.emptyList;
     function of an (web/mobile) application. For this reason, the recommendation is to use the label field
     with a user friendly string.
  */
-@SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
+@SuppressWarnings({"ArraysAsListWithZeroOrOneArgument", "WeakerAccess"})
 public class CiCorpusQuerier
 {
     private ConceptInsights conceptInsightsService;
@@ -35,16 +35,16 @@ public class CiCorpusQuerier
         this.corpus = corpus;
     }
 
-    public List<MatchedDocument> findDocumentsByConceptNames(List<String> conceptNames, Object limit)
+    public List<MatchedDocument> searchDocumentsByConceptNames(List<String> conceptNames, int limit)
     {
         final List<String> ids = new ArrayList<>();
         for (String conceptName : conceptNames) {
             ids.add(CiUtil.conceptNameToId(Graph.WIKIPEDIA.getId(), conceptName));
         }
-        return findDocumentsByConceptIds(ids, limit);
+        return searchDocumentsByConceptIds(ids, limit);
     }
 
-    List<MatchedDocument> findDocumentsByConceptIds(List<String> conceptIds, Object limit)
+    public List<MatchedDocument> searchDocumentsByConceptIds(List<String> conceptIds, int limit)
     {
         log.debug("Searching documents by conceptIds...");
         log.debug("conceptIds = " + conceptIds);
