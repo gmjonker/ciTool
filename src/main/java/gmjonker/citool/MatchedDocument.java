@@ -13,6 +13,7 @@ import static gmjonker.math.GeneralMath.round;
 /**
  * A document returned by Watson as a result of a query.
  */
+@SuppressWarnings("WeakerAccess")
 public class MatchedDocument extends Result
 {
     public List<String> explanation;
@@ -45,7 +46,7 @@ public class MatchedDocument extends Result
             Integer partsIndex = annotation.getPartsIndex();
             List<Integer> textIndex = annotation.getTextIndex();
 
-            String text = document.getParts().get(partsIndex).getData().replace('\n', ' ');
+            String text = document.getParts().get(partsIndex).getData().replace('\n', ' ').replace('\t', ' ');
 
             Integer from = textIndex.get(0);
             Integer to = textIndex.get(1);
