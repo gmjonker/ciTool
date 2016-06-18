@@ -108,7 +108,6 @@ public class CiCorpusHelper
         else
             parameters.put(ConceptInsights.LIMIT, limit); // 0 will get the maximum of 100.000 documents
         List<String> documentIds = conceptInsightsService.listDocuments(corpus, parameters).getDocuments();
-        System.out.println("documentIds = " + documentIds);
         if ( ! onlyIds.isEmpty())
             documentIds.retainAll(onlyIds);
         log.trace("documentIds = {}", () -> documentIds);

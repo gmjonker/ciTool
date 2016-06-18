@@ -101,8 +101,9 @@ public class CiDocumentConceptRelater
             for (List<Concept> conceptsSubList : lists) {
                 try {
                     Scores scores = conceptInsightsService.getDocumentRelationScores(document, conceptsSubList);
-                    for (Score score : scores.getScores())
+                    for (Score score : scores.getScores()) {
                         documentConceptRelations.put(documentName, CiUtil.getNameFromId(score.getConcept()), score.getScore());
+                    }
                     System.out.print(".");
                     successfulConcepts.addAll(conceptsSubList);
                 } catch (Exception e) {
