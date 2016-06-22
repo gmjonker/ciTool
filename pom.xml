@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.github.gmjonker</groupId>
             <artifactId>util</artifactId>
-            <version>b6d5d6c595</version>
+            <version>76eced1f8d</version>
         </dependency>
 
         <!-- Lombok -->

@@ -100,6 +100,7 @@ public class CiDocumentConceptRelater
             List<Concept> failedConcepts = new ArrayList<>();
             for (List<Concept> conceptsSubList : lists) {
                 try {
+                    // TODO: first check whether upload status == ok, to prevent unnecessary exceptions
                     Scores scores = conceptInsightsService.getDocumentRelationScores(document, conceptsSubList);
                     for (Score score : scores.getScores()) {
                         documentConceptRelations.put(documentName, CiUtil.getNameFromId(score.getConcept()), score.getScore());

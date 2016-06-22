@@ -24,6 +24,14 @@ public class CiDocumentUploader
         return new CiDocumentUploader(conceptInsightsService, corpus, true, ! noDelete, true, interactive);
     }
 
+    public static CiDocumentUploader getNonReplacingDocumentUploader(ConceptInsights conceptInsightsService, Corpus corpus,
+            boolean interactive, boolean noDelete)
+    {
+        return new CiDocumentUploader(conceptInsightsService, corpus, false, ! noDelete, true, interactive);
+    }
+
+    public int numUpdatedDocs = 0;
+
     private final ConceptInsights conceptInsightsService;
     private final Corpus corpus;
     private final boolean overwriteExisting;
@@ -49,7 +57,7 @@ public class CiDocumentUploader
      */
     public List<Document> uploadDocuments(List<CiDocument> ciDocuments)
     {
-        log.info("CI document uploader is uploading to corpus {}", corpus.getId());
+        log.info("CI document uploader is about to upload {} documents to corpus {}", ciDocuments.size(), corpus.getId());
         log.debug("Overwrite existing documents set to: {}", overwriteExisting);
         log.debug("Delete other documents set to: {}", deleteOthers);
 
@@ -59,21 +67,7 @@ public class CiDocumentUploader
         log.trace("allDocumentNames = {}", allDocumentNames);
 
         // Convert ciDocuments to documents that can be added
-        List<Document> documentsToAdd = new ArrayList<>();
-        for (CiDocument ciDocument : ciDocuments)
-        {
-            Document document = new Document(corpus, ciDocument.name);
-            document.setLabel(ciDocument.label);
-            // This should set the user fields, but doesn't seem to work somehow
-            // Map<String, String> userFields = new HashMap<>();
-            // userFields.put("companyName", ciDocument.companyName);
-            // document.setUserFields(userFields);
-            document.addParts(new Part("Text part", ciDocument.body, "text/plain"));
-            if (ciDocument.userFields != null && ! ciDocument.userFields.isEmpty())
-                document.setUserFields(ciDocument.userFields);
-            log.trace("document id: {} ", document::getId);
-            documentsToAdd.add(document);
-        }
+        List<Document> documentsToAdd = ciDocumentsToWatsonDocuments(ciDocuments);
 
         // Determine which documents need to be deleted
         List<Document> documentsToDelete = new ArrayList<>();
@@ -121,7 +115,6 @@ public class CiDocumentUploader
 
         // Add documents to CI
         log.info("Adding {} documents to CI...", documentsToAdd.size());
-        int numUploadedDocs = 0;
         Stopwatch uploadStopwatch = Stopwatch.createStarted();
         for (int i = 0; i < documentsToAdd.size(); i++)
         {
@@ -143,26 +136,100 @@ public class CiDocumentUploader
                     stopwatch.stop();
                     log.debug("Added document {}/{}: {} - {} ({} kb) in {}", i, documentsToAdd.size(), addedDocument.getName(),
                             addedDocument.getLabel(), size / 1000, stopwatch);
-                    numUploadedDocs++;
+                    numUpdatedDocs++;
                 } catch (Exception e) {
                     log.error("Error while uploading document {}", addedDocument.getLabel(), e);
                 }
             }
-            if (numUploadedDocs % 25 == 0) {
-                // Log some stats
-                CiStatus.logProcessingState(conceptInsightsService, corpus);
-                if (numUploadedDocs > 0) {
-                    long elapsed = uploadStopwatch.elapsed(TimeUnit.NANOSECONDS);
-                    long averageNanosPerUploadSoFar = elapsed / numUploadedDocs;
-                    long expectedTimeRemaining = averageNanosPerUploadSoFar * (documentsToAdd.size() - numUploadedDocs);
-                    log.debug("Remaining time: {}", nanosToString(expectedTimeRemaining));
-                }
-            }
+
+            logStats(documentsToAdd, uploadStopwatch);
         }
 
         log.trace("Corpus stats: {}", () -> conceptInsightsService.getCorpusStats(corpus));
 
-        log.info("Documents are all uploaded, and are now being processed by Watson...");
+        log.info("{} of {} documents were uploaded, and are now being processed by Watson...", numUpdatedDocs,
+                ciDocuments.size());
         return documentsToAdd;
+    }
+
+    /**
+     * Only updates metadata (label and user field) of existing documents.
+     */
+    public List<Document> updateMetaData(List<CiDocument> ciDocuments)
+    {
+        log.info("CI document updater is about to update {} documents in corpus {}", ciDocuments.size(), corpus.getId());
+
+        // Get names of documents currently in CI
+        Set<String> allDocumentNames = CiCorpusHelper.getAllDocumentNames(conceptInsightsService, corpus);
+        log.info("There are currently {} documents in CI", allDocumentNames.size());
+        log.trace("allDocumentNames = {}", allDocumentNames);
+
+        // Convert ciDocuments to Watson documents
+        List<Document> documentsToUpdate = ciDocumentsToWatsonDocuments(ciDocuments);
+
+        // Updating documents
+        log.info("Updating {} documents...", documentsToUpdate.size());
+        Stopwatch uploadStopwatch = Stopwatch.createStarted();
+        for (int i = 0; i < documentsToUpdate.size(); i++)
+        {
+            Document documentToUpdate = documentsToUpdate.get(i);
+            if ( ! allDocumentNames.contains(documentToUpdate.getName())) {
+                log.warn("Document {} not in corpus, can't update", documentToUpdate.getName());
+                continue;
+            }
+
+            log.trace("Updating document: " + documentToUpdate);
+            try {
+                Stopwatch stopwatch = Stopwatch.createStarted();
+                conceptInsightsService.updateDocument(documentToUpdate);
+                stopwatch.stop();
+                log.debug("Updated document {}/{}: {} - {} in {}", i, documentsToUpdate.size(), documentToUpdate.getName(),
+                        documentToUpdate.getLabel(), stopwatch);
+                numUpdatedDocs++;
+            } catch (Exception e) {
+                log.error("Error while updating document {}", documentToUpdate.getLabel(), e);
+            }
+
+            logStats(documentsToUpdate, uploadStopwatch);
+        }
+
+        log.trace("Corpus stats: {}", () -> conceptInsightsService.getCorpusStats(corpus));
+
+        log.info("{} of {} documents were updated.", numUpdatedDocs, ciDocuments.size());
+        return documentsToUpdate;
+    }
+
+    private List<Document> ciDocumentsToWatsonDocuments(List<CiDocument> ciDocuments)
+    {
+        List<Document> documentsUpdated = new ArrayList<>();
+        for (CiDocument ciDocument : ciDocuments)
+        {
+            Document document = new Document(corpus, ciDocument.name);
+            document.setLabel(ciDocument.label);
+            // This should set the user fields, but doesn't seem to work somehow
+            // Map<String, String> userFields = new HashMap<>();
+            // userFields.put("companyName", ciDocument.companyName);
+            // document.setUserFields(userFields);
+            document.addParts(new Part("Text part", ciDocument.body, "text/plain"));
+            if (ciDocument.userFields != null && ! ciDocument.userFields.isEmpty())
+                document.setUserFields(ciDocument.userFields);
+            log.trace("document id: {} ", document::getId);
+            documentsUpdated.add(document);
+        }
+        return documentsUpdated;
+    }
+
+    private void logStats(List<Document> documentsToUpdate, Stopwatch uploadStopwatch)
+    {
+        if (numUpdatedDocs % 25 == 0) {
+            // Log some stats
+            CiStatus.logProcessingState(conceptInsightsService, corpus);
+            if (numUpdatedDocs > 0) {
+                long elapsed = uploadStopwatch.elapsed(TimeUnit.NANOSECONDS);
+                long averageNanosPerUploadSoFar = elapsed / numUpdatedDocs;
+                long expectedTimeRemaining = averageNanosPerUploadSoFar * (documentsToUpdate.size() - numUpdatedDocs);
+                log.debug("Remaining time: {}", nanosToString(expectedTimeRemaining));
+            }
+        }
     }
 }
