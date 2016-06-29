@@ -15,6 +15,7 @@
 
     <repositories>
         <repository>
+            <name>jitpack</name>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -39,7 +40,7 @@
         <dependency>
             <groupId>com.github.gmjonker</groupId>
             <artifactId>watson-java-sdk</artifactId>
-            <version>d5bb68697a</version>
+            <version>9bb8d98786</version>
         </dependency>
         <dependency>
             <groupId>com.github.gmjonker</groupId>

@@ -1,10 +1,13 @@
-package gmjonker.citool;
+package gmjonker.citool.domain;
 
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
+import gmjonker.citool.CiCorpusHelper;
+import gmjonker.citool.CiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static gmjonker.math.GeneralMath.max;
 import static gmjonker.math.GeneralMath.min;
@@ -18,12 +21,13 @@ public class MatchedDocument extends Result
 {
     public List<String> explanation;
 
-    public MatchedDocument(String id, String label, Double score, List<Annotation> annotations)
+    public MatchedDocument(String id, String label, Double score, List<Annotation> annotations, Map<String, String> userFields)
     {
         setId(id);
         setLabel(label);
         setScore(score);
         setAnnotations(annotations);
+        setUserFields(userFields);
     }
 
     public String getName()

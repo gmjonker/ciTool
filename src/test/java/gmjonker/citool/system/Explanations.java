@@ -5,7 +5,7 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import gmjonker.citool.CiCorpusHelper;
 import gmjonker.citool.CiCorpusQuerier;
 import gmjonker.citool.CiUtil;
-import gmjonker.citool.MatchedDocument;
+import gmjonker.citool.domain.MatchedDocument;
 import gmjonker.util.Util;
 
 import java.util.List;
